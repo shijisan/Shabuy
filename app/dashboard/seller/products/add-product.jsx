@@ -8,8 +8,14 @@ export default function AddProduct() {
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
   const [quantity, setQuantity] = useState('');
+  const [images, setImages] = useState([]); // Manage image files
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+
+  // Handle image file selection
+  const handleImageChange = (e) => {
+    setImages([...e.target.files]); // Store files as an array
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -17,13 +23,25 @@ export default function AddProduct() {
 
     try {
       const token = localStorage.getItem('token');
+
+      // Prepare form data
+      const formData = new FormData();
+      formData.append('name', name);
+      formData.append('description', description);
+      formData.append('price', parseFloat(price));
+      formData.append('quantity', parseInt(quantity));
+
+      // Append images to form data
+      images.forEach((image) => {
+        formData.append('images', image);
+      });
+
       const res = await fetch('/api/seller/products', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ name, description, price: parseFloat(price), quantity: parseInt(quantity) }),
+        body: formData,
       });
 
       if (res.ok) {
@@ -81,6 +99,29 @@ export default function AddProduct() {
             className="block w-full p-2 mt-1 border border-gray-300 rounded-md"
             required
           />
+        </div>
+        <div className="mb-4">
+          <label className="block text-gray-700">Images</label>
+          <input
+            type="file"
+            multiple
+            onChange={handleImageChange}
+            className="block w-full p-2 mt-1 border border-gray-300 rounded-md"
+          />
+          <div className="mt-2">
+            {images.length > 0 && (
+              <div className="flex space-x-2">
+                {Array.from(images).map((image, index) => (
+                  <img
+                    key={index}
+                    src={URL.createObjectURL(image)}
+                    alt={`Preview ${index}`}
+                    className="object-cover w-24 h-24 border border-gray-300 rounded-md"
+                  />
+                ))}
+              </div>
+            )}
+          </div>
         </div>
         <button
           type="submit"

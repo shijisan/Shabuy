@@ -7,38 +7,37 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 model User {
-  id          Int      @id @default(autoincrement())
+  id          Int        @id @default(autoincrement())
   name        String
-  email       String   @unique
+  email       String     @unique
   password    String
   roles       UserRole[]
-  products    Product[] @relation("ProductSeller")
-  orders      Order[]   @relation("UserOrders")
+  products    Product[]  @relation("ProductSeller")
+  orders      Order[]    @relation("UserOrders")
 }
 
 model UserRole {
   userId      Int
-  role        UserRoleType // Enum directly
+  role        UserRoleType
 
-  user        User     @relation(fields: [userId], references: [id])
+  user        User       @relation(fields: [userId], references: [id])
 
   @@id([userId, role])
 }
 
 model Product {
-  id          Int      @id @default(autoincrement())
+  id          Int        @id @default(autoincrement())
   name        String
   description String
   price       Float
   quantity    Int
-  deleted     Boolean  @default(false) // Added field for soft deletion
-  mainImage   String?  // URL of the main image
-  images      Image[]  // Relation to the Image model
-  seller      User     @relation("ProductSeller", fields: [sellerId], references: [id])
+  deleted     Boolean    @default(false) // Soft deletion
+  mainImage   String?    // URL of the main image
+  images      Image[]    // Relation to Image model
+  seller      User       @relation("ProductSeller", fields: [sellerId], references: [id])
   sellerId    Int
-  orders      Order[]  @relation("OrderProducts")
+  orderItems  OrderItem[] // Relation to OrderItem
 }
 
 model Image {
@@ -48,14 +47,21 @@ model Image {
   productId Int
 }
 
-
-
 model Order {
-  id         Int      @id @default(autoincrement())
+  id         Int        @id @default(autoincrement())
   totalPrice Float
-  user       User     @relation("UserOrders", fields: [userId], references: [id])
+  user       User       @relation("UserOrders", fields: [userId], references: [id])
   userId     Int
-  products   Product[] @relation("OrderProducts")
+  orderItems OrderItem[] // Relation to OrderItem
+}
+
+model OrderItem {
+  id         Int      @id @default(autoincrement())
+  order      Order    @relation(fields: [orderId], references: [id])
+  orderId    Int
+  product    Product  @relation(fields: [productId], references: [id])
+  productId  Int
+  quantity   Int
 }
 
 enum UserRoleType {
