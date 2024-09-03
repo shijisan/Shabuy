@@ -33,10 +33,22 @@ model Product {
   description String
   price       Float
   quantity    Int
+  deleted     Boolean  @default(false) // Added field for soft deletion
+  mainImage   String?  // URL of the main image
+  images      Image[]  // Relation to the Image model
   seller      User     @relation("ProductSeller", fields: [sellerId], references: [id])
   sellerId    Int
   orders      Order[]  @relation("OrderProducts")
 }
+
+model Image {
+  id        Int      @id @default(autoincrement())
+  url       String   // URL of the image
+  product   Product  @relation(fields: [productId], references: [id])
+  productId Int
+}
+
+
 
 model Order {
   id         Int      @id @default(autoincrement())
