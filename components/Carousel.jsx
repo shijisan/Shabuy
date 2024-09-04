@@ -1,4 +1,4 @@
-// components/Carousel.js
+"use client"
 import React, { useState, useEffect } from 'react';
 import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css'; // Import carousel styles
@@ -28,8 +28,8 @@ const CustomCarousel = ({ images, autoplay = true, interval = 3000, showArrows =
       showThumbs={false}
     >
       {images.map((image, index) => (
-        <div key={index}>
-          <img src={image} alt={`Slide ${index}`} />
+        <div className='bg-gray-200' key={index}>
+          <img src={image} className='object-contain max-h-80-screen' alt={`Slide ${index}`} />
         </div>
       ))}
     </Carousel>
