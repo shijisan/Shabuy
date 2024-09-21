@@ -10,7 +10,9 @@ export default function Home(){
   ];
   return(
     <>
-      <CustomCarousel images={images}/>
+      <header>
+        <CustomCarousel images={images}/>
+      </header>
     </>
   );
 }

@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import SellerDashboardNav from '@/components/SellerDashboardNav';
+import Navbar from '@/components/Navbar';
 
 export default function DashboardLayout({ children }) {
   const router = useRouter();
@@ -14,7 +14,7 @@ export default function DashboardLayout({ children }) {
 
   return (
     <div className="flex">
-      <SellerDashboardNav />
+      <Navbar />
       <main className="flex-1 p-6">
         {children}
       </main>

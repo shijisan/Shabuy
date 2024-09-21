@@ -1,4 +1,3 @@
-// components/Navbar.jsx
 "use client";
 
 import { useState, useEffect } from "react";
@@ -9,17 +8,23 @@ import SearchInput from "@/components/SearchInput";
 export default function Navbar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [userRole, setUserRole] = useState(null); // New state for user role
   const router = useRouter();
 
   useEffect(() => {
     // Check if the user is logged in by checking the token in localStorage
     const token = localStorage.getItem("token");
-    setIsLoggedIn(!!token);
+    if (token) {
+      setIsLoggedIn(true);
+      const decoded = JSON.parse(atob(token.split('.')[1])); // Decode the token to get user info
+      setUserRole(decoded.role); // Assuming the role is stored in the token
+    }
   }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     setIsLoggedIn(false);
+    setUserRole(null);
     router.push("/login");
   };
 
@@ -35,7 +40,7 @@ export default function Navbar() {
           </Link>
         </div>
 
-        <div className="hidden space-x-6 md:flex">
+        <div className="items-center hidden space-x-6 md:flex">
           <Link href="/" className="hover:text-orange-300">
             Home
           </Link>
@@ -45,16 +50,17 @@ export default function Navbar() {
           <Link href="/contact" className="hover:text-orange-300">
             Contact
           </Link>
+          <SearchInput className="hidden md:flex" />
         </div>
-
-        {/* Search Input Component */}
-        <SearchInput />
 
         <div className="items-center hidden space-x-4 md:flex">
           {isLoggedIn ? (
             <>
-              <Link href="/profile" className="hover:text-orange-300">
-                Profile
+              <Link
+                href={userRole === "SELLER" ? "/dashboard/seller" : "/dashboard/buyer"}
+                className="hover:text-orange-300"
+              >
+                Dashboard
               </Link>
               <button onClick={handleLogout} className="hover:text-orange-300">
                 Logout
@@ -94,39 +100,43 @@ export default function Navbar() {
       </div>
 
       {menuOpen && (
-        <div className="mt-4 space-y-4 md:hidden">
-          <Link href="/" className="block text-orange-100 hover:text-orange-300" onClick={toggleMenu}>
+        <div className="flex flex-col items-center content-center mt-4 space-y-4 md:hidden">
+          <SearchInput />
+          <Link href="/" className="block hover:text-orange-300" onClick={toggleMenu}>
             Home
           </Link>
-          <Link href="/about" className="block text-orange-100 hover:text-orange-300" onClick={toggleMenu}>
+          <Link href="/about" className="block hover:text-orange-300" onClick={toggleMenu}>
             About
           </Link>
-          <Link href="/contact" className="block text-orange-100 hover:text-orange-300" onClick={toggleMenu}>
+          <Link href="/contact" className="block hover:text-orange-300" onClick={toggleMenu}>
             Contact
           </Link>
-          {/* Mobile Search Input Component */}
-          <SearchInput />
+
           {isLoggedIn ? (
             <>
-              <Link href="/profile" className="block text-orange-100 hover:text-orange-300" onClick={toggleMenu}>
-                Profile
+              <Link
+                href={userRole === "SELLER" ? "/dashboard/seller" : "/dashboard/buyer"}
+                className="block hover:text-orange-300"
+                onClick={toggleMenu}
+              >
+                Dashboard
               </Link>
               <button
                 onClick={() => {
                   handleLogout();
                   toggleMenu();
                 }}
-                className="block w-full text-left text-orange-100 hover:text-orange-300"
+                className="block w-full text-left hover:text-orange-300"
               >
                 Logout
               </button>
             </>
           ) : (
             <>
-              <Link href="/login" className="block text-orange-100 hover:text-orange-300" onClick={toggleMenu}>
+              <Link href="/login" className="block hover:text-orange-300" onClick={toggleMenu}>
                 Login
               </Link>
-              <Link href="/register" className="block text-orange-100 hover:text-orange-300" onClick={toggleMenu}>
+              <Link href="/register" className="block hover:text-orange-300" onClick={toggleMenu}>
                 Register
               </Link>
             </>

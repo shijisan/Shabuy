@@ -1,4 +1,4 @@
-"use client";
+"use client"
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -6,19 +6,20 @@ import { useRouter } from 'next/navigation';
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState('BUYER'); // Default role
+  const [role, setRole] = useState('USER'); // Default role
   const [error, setError] = useState(null);
   const router = useRouter();
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
+      const mappedRole = role === 'BUYER' ? 'USER' : role;
+
       const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, role }), // Include selected role
+        body: JSON.stringify({ email, password, role: mappedRole }), // Map role here
       });
 
       const data = await res.json();
@@ -26,7 +27,7 @@ export default function Login() {
       if (res.ok) {
         localStorage.setItem('token', data.token); // Store token in localStorage
         // Redirect based on selected role
-        if (role === 'SELLER') {
+        if (mappedRole === 'SELLER') {
           router.push('/dashboard/seller');
         } else {
           router.push('/dashboard/buyer');
@@ -41,7 +42,7 @@ export default function Login() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+    <div className="flex items-center justify-center min-h-screen">
       <div className="w-full max-w-md">
         <form onSubmit={handleSubmit} className="px-8 pt-6 pb-8 mb-4 bg-white rounded shadow-md">
           <h2 className="mb-6 text-2xl font-bold text-center text-gray-700">Login</h2>
@@ -82,7 +83,7 @@ export default function Login() {
               onChange={(e) => setRole(e.target.value)}
               className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
             >
-              <option value="BUYER">Buyer</option>
+              <option value="USER">Buyer</option> {/* Updated value */}
               <option value="SELLER">Seller</option>
             </select>
           </div>

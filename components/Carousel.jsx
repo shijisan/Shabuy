@@ -29,7 +29,7 @@ const CustomCarousel = ({ images, autoplay = true, interval = 3000, showArrows =
     >
       {images.map((image, index) => (
         <div className='bg-gray-200' key={index}>
-          <img src={image} className='object-contain max-h-80-screen' alt={`Slide ${index}`} />
+          <img src={image} className='object-cover max-h-80-screen' alt={`Slide ${index}`} />
         </div>
       ))}
     </Carousel>

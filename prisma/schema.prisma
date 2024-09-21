@@ -15,7 +15,10 @@ model User {
   roles       UserRole[]
   products    Product[]  @relation("ProductSeller")
   orders      Order[]    @relation("UserOrders")
+  carts       Cart[]     @relation("UserCart") // Relation to Cart model
 }
+
+
 
 model UserRole {
   userId      Int
@@ -38,6 +41,7 @@ model Product {
   seller      User       @relation("ProductSeller", fields: [sellerId], references: [id])
   sellerId    Int
   orderItems  OrderItem[] // Relation to OrderItem
+  carts       Cart[]     // Relation to Cart model
 }
 
 model Image {
@@ -62,6 +66,17 @@ model OrderItem {
   product    Product  @relation(fields: [productId], references: [id])
   productId  Int
   quantity   Int
+}
+
+model Cart {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation("UserCart", fields: [userId], references: [id]) // Specify the relation name
+  userId    Int
+  product   Product  @relation(fields: [productId], references: [id])
+  productId Int
+  quantity  Int      @default(1)
+
+  @@unique([userId, productId]) // Ensure a user can only have one entry per product
 }
 
 enum UserRoleType {

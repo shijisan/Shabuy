@@ -8,46 +8,11 @@
   --background-end-rgb: 255, 255, 255; /* White */
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255; /* Dark mode text color: white */
-    --background-start-rgb: 33, 33, 33; /* Dark Gray */
-    --background-end-rgb: 33, 33, 33;   /* Dark Gray */
-  }
-
-  input, textarea, select {
-    background-color: rgb(33, 33, 33); /* Dark Gray */
-    color: rgb(255, 255, 255)!important; /* White text for contrast */
-    border: 1px solid rgb(60, 60, 60); /* Slightly lighter gray for borders */
-  }
-
-  input::placeholder, textarea::placeholder {
-    color: rgb(150, 150, 150); /* Lighter gray for placeholders */
-  }
-
-  input:focus, textarea:focus, select:focus {
-    outline: none;
-    border-color: rgb(80, 80, 80); /* Darker gray for focused border */
-  }
+input{
+  color: black;
 }
 
-body {
-  color: rgb(var(--foreground-rgb)); /* Text color based on the color scheme */
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
-}
-
-input, textarea, select {
-  color: black!important; 
-}
-
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+header, header img{
+  height: 30vh;
 }
 
